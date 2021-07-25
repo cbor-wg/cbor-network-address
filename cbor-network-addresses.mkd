@@ -94,7 +94,7 @@ When applied to an array that starts with a byte string, that stands
 for an IP address, followed by the bit length of a prefix built out of
 the first `length` bits of the address.
 
-This form is called the Interface Format, or Interface Definition.
+This form is called the Interface Format.
 
 
 ## IPv6
