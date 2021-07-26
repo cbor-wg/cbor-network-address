@@ -54,12 +54,16 @@ These tags cover addresses (260), and prefixes (261).
 Tag 260 distinguishes between IPv4, IPv6 and Ethernet through the length of the byte string only.
 Tag 261 was not documented well enough to be used.
 
-This specification provides a format for IPv6 and IPv4 addresses, prefixes,
-and addresses with prefixes, achieving an explicit indication of IPv4 or IPv6.
-Prefixes omit trailing zeroes in the address.
-(Due to the complexity of testing, the value of omitting trailing zeros for addresses was considered non-essential and support for that was removed in this specification.)
-
-This specification does not deal with 6 or 8-byte Ethernet addresses.
+This specification defines tags 54 and 52.
+These new tags are intended to be used in preference to tags 260 and
+261.
+They provide formats for IPv6 and IPv4 addresses, prefixes,
+and addresses with prefixes, achieving an explicit indication of IPv6 or IPv4.
+The prefix format omits trailing zeroes in the address part.
+(Due to the complexity of testing, the value of omitting trailing
+zeros for the pure address format was considered non-essential and
+support for that is not provided in this specification.)
+This specification does not deal with 6- or 8-byte Ethernet addresses.
 
 # Terminology
 
