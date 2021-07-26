@@ -35,10 +35,11 @@ normative:
   RFC8610: cddl
 
 informative:
+  IANA.cbor-tags: tags
 
 --- abstract
 
-This specification describes two CBOR Tags to be used with IPv4 and IPv6 addresses and prefixes.
+This specification defines two CBOR Tags to be used with IPv6 and IPv4 addresses and prefixes.
 
 [^track]
 
@@ -49,9 +50,9 @@ This specification describes two CBOR Tags to be used with IPv4 and IPv6 address
 # Introduction
 
 {{RFC8949}} defines a number of CBOR Tags for common items.
-Tags 260 and 261 were later defined through IANA.
+Tags 260 and 261 were later defined through IANA {{-tags}}.
 These tags cover addresses (260), and prefixes (261).
-Tag 260 distinguishes between IPv4, IPv6 and Ethernet through the length of the byte string only.
+Tag 260 distinguishes between IPv6, IPv4 and Ethernet through the length of the byte string only.
 Tag 261 was not documented well enough to be used.
 
 This specification defines tags 54 and 52.
@@ -81,7 +82,7 @@ This form is called the Address Format.
 
 ### Prefixes
 
-When applied to an array that starts with a number, they represent a
+When applied to an array that starts with an unsigned integer, they represent a
 CIDR-style prefix of that length.
 
 When the Address Format (i.e., without prefix) appears in a context where a prefix is expected, then it is to be assumed that all bits are relevant.
@@ -91,9 +92,11 @@ This form is called the Prefix Format.
 
 ### Interface Definition
 
-When applied to an array that starts with a byte string, that stands
-for an IP address, followed by the bit length of a prefix built out of
-the first `length` bits of the address.
+When applied to an array that starts with a byte string, which stands
+for an IP address, followed by an unsigned integer giving the bit
+length of a prefix built out of the first `length` bits of the
+address, they represent information that is commonly used to specify
+both the network prefix and the IP address of an interface.
 
 This form is called the Interface Format.
 
@@ -295,7 +298,8 @@ Users of this encoding should be aware of this possibility.
 
 # IANA Considerations
 
-IANA has allocated two tags from the Specification Required area of the Concise Binary Object Representation (CBOR) Tags:
+IANA has allocated two tags from the Specification Required area of
+the Concise Binary Object Representation (CBOR) Tags {{-tags}}:
 
 ## Tag 54 - IPv6
 
