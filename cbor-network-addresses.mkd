@@ -317,7 +317,7 @@ Semantics: IPv4, [prefixlen,IPv4], [IPv4,prefixpart]
 
 ## Tags 260 and 261
 
-IANA is requested to add the note "DEPRECATED in favor of 52 and 54” to registrations 260 and 261”
+IANA is requested to add the note "DEPRECATED in favor of 52 and 54" to registrations 260 and 261
 
 --- back
 
