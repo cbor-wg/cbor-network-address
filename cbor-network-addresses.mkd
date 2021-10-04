@@ -203,11 +203,11 @@ MUST be encoded as:
 even though variations like:
 
 ~~~~
-54([44, h'20010db81233'])  WRONG
-54([45, h'20010db8123f'])  WRONG
+54([44, h'20010db81233'])
+54([45, h'20010db8123f'])
 ~~~~
 
-would be parsed in the exact same way.
+would be parsed in the exact same way; they MUST be considered invalid.
 
 The same considerations apply to IPv4 prefixes.
 
