@@ -238,7 +238,7 @@ Finally, looking at the last three bits of the prefix-length in bits
 to force the lower, non-relevant bits to zero, or simply:
 
 ~~~ c
-unused_bits = (-prefix_length_in_bits) & 7;
+unused_bits = (8 - (prefix_length_in_bits & 7)) % 8;
 if (length_in_bytes > 0)
   address_bytes[length_in_bytes - 1] &= (0xFF << unused_bits);
 ~~~
