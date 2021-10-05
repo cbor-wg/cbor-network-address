@@ -106,7 +106,7 @@ This form is called the Interface Format.
 ## IPv6
 
 IANA has allocated tag 54 for IPv6 uses.
-(Note that this is the ASCII code for '6'.)
+(This is the ASCII code for '6'.)
 
 An IPv6 address is to be encoded as a sixteen-byte byte string
 ({{Section 3.1 of RFC8949}}, major type 2), enclosed in Tag number 54.
@@ -138,13 +138,13 @@ For example:
 54([h'20010db81234DEEDBEEFCAFEFACEFEED', 56])
 ~~~~
 
-Note that the address-with-prefix form can be reliably distinguished
+The address-with-prefix form can be reliably distinguished
 from the prefix form only in the sequence of the array elements.
 
 ## IPv4
 
 IANA has allocated tag 52 for IPv4 uses.
-(Note that this is the ASCII code for '4'.)
+(This is the ASCII code for '4'.)
 
 An IPv4 address is to be encoded as a four-byte byte string
 ({{Section 3.1 of RFC8949}}, major type 2), enclosed in Tag number 52.
@@ -178,7 +178,7 @@ with the length of the prefix (implied 192.0.2.0/24) last.
 52([h'C0000201', 24])
 ~~~~
 
-Note that the address-with-prefix form can be reliably distinguished
+The address-with-prefix form can be reliably distinguished
 from the prefix form only in the sequence of the array elements.
 
 
