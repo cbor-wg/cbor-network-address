@@ -99,6 +99,8 @@ length of a prefix built out of the first `length` bits of the
 address, they represent information that is commonly used to specify
 both the network prefix and the IP address of an interface.
 
+The length of the byte string is always 16 bytes (for IPv6) and 4 bytes (for IPv4).
+
 This form is called the Interface Format.
 
 
