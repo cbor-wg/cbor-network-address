@@ -55,7 +55,8 @@ These tags cover addresses (260), and prefixes (261).
 Tag 260 distinguishes between IPv6, IPv4 and Ethernet through the length of the byte string only.
 Tag 261 was not documented well enough to be used.
 
-This specification defines tags 54 and 52.
+This specification defines tags 54 and 52 achieving
+an explicit indication of IPv6 or IPv4 by the tag number.
 These new tags are intended to be used in preference to tags 260 and
 261.
 They provide formats for IPv6 and IPv4 addresses, prefixes,
