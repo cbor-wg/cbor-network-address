@@ -50,10 +50,9 @@ This specification defines two CBOR Tags to be used with IPv6 and IPv4 addresses
 # Introduction
 
 {{RFC8949}} defines a number of CBOR Tags for common items.
-Tags 260 and 261 were later defined through IANA {{-tags}}.
-These tags cover addresses (260), and prefixes (261).
-Tag 260 distinguishes between IPv6, IPv4, and Ethernet through the length of the byte string only.
-Tag 261 was not documented well enough to be used.
+Tags 260 and 261 were later defined in drafts listed with IANA {{-tags}}.
+These tags were intended to cover addresses (260) and prefixes (261).
+Tag 260 distinguishes between IPv6, IPv4, and MAC {{?RFC7042}} addresses only through the length of the  byte string making it impossible, for example, to drop trailing zeros in the encoding of IP addresses.  Tag 261 was not documented well enough to be used.
 
 This specification defines tags 54 and 52 achieving
 an explicit indication of IPv6 or IPv4 by the tag number.
