@@ -291,8 +291,11 @@ ipv4-prefix-bytes = bytes .size (uint .le 4)
 
 # Security Considerations
 
-Identifying which byte sequences in a protocol are addresses may allow an attacker or eavesdropper to better understand what parts of a packet to attack.
-That information, however, is likely to be found in the relevant RFCs anyway, so this is not a significant exposure.
+This document provides an CBOR encoding for IPv4 and IPv6 address information.
+Any applications using these encodings will need to consider the security
+implications of this data in their specific context.  For example, identifying
+which byte sequences in a protocol are addresses may allow an attacker or
+eavesdropper to better understand what parts of a packet to attack.
 
 The right-hand bits of the prefix, after the prefix-length, are ignored by this protocol.
 A malicious party could use them to transmit covert data in a way that would not affect the primary use of this encoding.
