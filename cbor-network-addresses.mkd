@@ -102,6 +102,12 @@ The length of the byte string is always 16 bytes (for IPv6) and 4 bytes (for IPv
 
 This form is called the Interface Format.
 
+Interface Format definitions support an optional third element to the array, which is to be used as the IPv6 Link-Local interface identifier {{Section 4 of RFC3542}}.
+This may be an integer, in which case it is to be interpreted as the interface index.
+This may be a string, in which case it is to be interpreted as an interface name.
+
+In the cases where the Interface Format is being used to represent only an address with an interface identifier, and no interface prefix information, then the prefix length may be replaced with the CBOR "false" (0xF4).
+
 
 ## IPv6
 
@@ -140,6 +146,27 @@ For example:
 
 The address-with-prefix form can be reliably distinguished
 from the prefix form only in the sequence of the array elements.
+
+Some example of a link-local IPv6 address with a 64-bit prefix:
+
+~~~~
+54([h'fe8000000000020202fffffffe030303', 64, 'eth0'])
+~~~~
+
+with a numeric interface identifier:
+~~~~
+54([h'fe8000000000020202fffffffe030303', 64, 42])
+~~~~
+
+An IPv6 link-local address without a prefix length:
+~~~~
+54([h'fe8000000000020202fffffffe030303', false, 42])
+~~~~
+
+Interface identifiers may be used with any kind of IPv6 address, not just Link-Local addresses.
+In particular, they are valid for multicast addresses, and there may still be some significance
+for Globally Unique Addresses (GUA).
+
 
 ## IPv4
 
