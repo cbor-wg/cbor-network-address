@@ -36,6 +36,7 @@ normative:
 
 informative:
   IANA.cbor-tags: tags
+  RFC3542:
 
 --- abstract
 
@@ -120,7 +121,7 @@ An IPv6 address is to be encoded as a sixteen-byte byte string
 For example:
 
 ~~~~
-54(h'20010db81234DEEDBEEFCAFEFACEFEED')
+54(h'20010db81234deedbeefcafefacefeed')
 ~~~~
 
 An IPv6 prefix, such as 2001:db8:1234::/48 is to be encoded as a two element array, with the length of the prefix first.
@@ -141,7 +142,7 @@ associated network the prefix next.
 For example:
 
 ~~~~
-54([h'20010db81234DEEDBEEFCAFEFACEFEED', 56])
+54([h'20010db81234deedbeefcafefacefeed', 56])
 ~~~~
 
 The address-with-prefix form can be reliably distinguished
@@ -154,11 +155,13 @@ Some example of a link-local IPv6 address with a 64-bit prefix:
 ~~~~
 
 with a numeric interface identifier:
+
 ~~~~
 54([h'fe8000000000020202fffffffe030303', 64, 42])
 ~~~~
 
 An IPv6 link-local address without a prefix length:
+
 ~~~~
 54([h'fe8000000000020202fffffffe030303', false, 42])
 ~~~~
@@ -180,7 +183,7 @@ An IPv4 address is to be encoded as a four-byte byte string
 For example:
 
 ~~~~
-52(h'C0000201')
+52(h'c0000201')
 ~~~~
 
 An IPv4 prefix, such as 192.0.2.0/24 is to be encoded as a two element array, with the length of the prefix first.
@@ -189,7 +192,7 @@ Trailing zero bytes MUST be omitted.
 For example:
 
 ~~~~
-52([24, h'C00002'])
+52([24, h'c00002'])
 ~~~~
 
 
@@ -202,7 +205,7 @@ For example,  192.0.2.1/24 is to be encoded as a two element array,
 with the length of the prefix (implied 192.0.2.0/24) last.
 
 ~~~~
-52([h'C0000201', 24])
+52([h'c0000201', 24])
 ~~~~
 
 The address-with-prefix form can be reliably distinguished
@@ -300,7 +303,8 @@ ipv4-address-or-prefix = #6.52(ipv4-address /
 ipv6-address = bytes .size 16
 ipv4-address = bytes .size 4
 
-ipv6-address-with-prefix = [ipv6-address, ipv6-prefix-value, ?ipv6-interface-identifier]
+ipv6-address-with-prefix = [ipv6-address, ipv6-prefix-value,
+                            ?ipv6-interface-identifier]
 ipv4-address-with-prefix = [ipv4-address, ipv4-prefix-length]
 
 ipv6-prefix-value  = ipv6-prefix-length
