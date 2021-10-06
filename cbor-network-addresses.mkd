@@ -37,6 +37,7 @@ normative:
 informative:
   IANA.cbor-tags: tags
   RFC3542:
+  RFC4007:
 
 --- abstract
 
@@ -103,9 +104,13 @@ The length of the byte string is always 16 bytes (for IPv6) and 4 bytes (for IPv
 
 This form is called the Interface Format.
 
-Interface Format definitions support an optional third element to the array, which is to be used as the IPv6 Link-Local interface identifier {{Section 4 of RFC3542}}.
+Interface Format definitions support an optional third element to the array, which is to be used as the IPv6 Link-Local zone identifier from {{Section 4 of RFC3542}} and {{Section 6 of RFC4007}}.
 This may be an integer, in which case it is to be interpreted as the interface index.
 This may be a string, in which case it is to be interpreted as an interface name.
+
+As explained in {{RFC4007}} the zone identifiers are strictly local to the node.
+They are useful for communications within a node about connected addresses (for instance, where a link-local peer is discovered by one daemon, and another daemon needs to be informed).
+They may also have utility in some management protocols.
 
 In the cases where the Interface Format is being used to represent only an address with an interface identifier, and no interface prefix information, then the prefix length may be replaced with the CBOR "false" (0xF4).
 
@@ -335,6 +340,9 @@ The right-hand bits of the prefix, after the prefix-length, are ignored by this 
 A malicious party could use them to transmit covert data in a way that would not affect the primary use of this encoding.
 Such abuse would be detected by examination of the raw protocol bytes.
 Users of this encoding should be aware of this possibility.
+
+There are many ways in which the encodings may be invalid: wrong byte lengths (too long, too short), or invalid prefix lengths (greater than 32 for IPv4, greater than 128 for IPv6, negative values, etc.)
+These are all invalid and this error needs to be signaled to the application, and the entire content thrown away.
 
 # IANA Considerations
 
