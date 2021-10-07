@@ -144,7 +144,8 @@ For example:
 An IPv6 address combined with a prefix length, such as being used for
 configuring an interface, is to be encoded as a two element array,
 with the (full-length) IPv6 address first and the length of the
-associated network the prefix next.
+associated network the prefix next; a third element can be added for
+the zone identifier.
 
 
 For example:
@@ -207,7 +208,8 @@ For example:
 An IPv4 address combined with a prefix length, such as being used for
 configuring an interface, is to be encoded as a two element array,
 with the (full-length) IPv4 address first and the length of the
-associated network the prefix next.
+associated network the prefix next; a third element can be added for
+the zone identifier.
 
 For example,  192.0.2.1/24 is to be encoded as a two element array,
 with the length of the prefix (implied 192.0.2.0/24) last.
@@ -237,14 +239,14 @@ to zero, if any.  While decoders are expected to ignore them, such garbage entit
 MUST be encoded as:
 
 ~~~~
-52([44, h'20010db81230'])
+54([44, h'20010db81230'])
 ~~~~
 
 even though variations like:
 
 ~~~~
 54([44, h'20010db81233'])
-54([45, h'20010db8123f'])
+54([44, h'20010db8123f'])
 ~~~~
 
 would be parsed in the exact same way; they MUST be considered invalid.
