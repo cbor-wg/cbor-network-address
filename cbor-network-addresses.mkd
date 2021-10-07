@@ -38,6 +38,8 @@ informative:
   IANA.cbor-tags: tags
   RFC3542:
   RFC4007:
+  RFC4001:
+  RFC6991:
 
 --- abstract
 
@@ -104,9 +106,10 @@ The length of the byte string is always 16 bytes (for IPv6) and 4 bytes (for IPv
 
 This form is called the Interface Format.
 
-Interface Format definitions support an optional third element to the array, which is to be used as the IPv6 Link-Local zone identifier from {{Section 4 of RFC3542}} and {{Section 6 of RFC4007}}.
-This may be an integer, in which case it is to be interpreted as the interface index.
-This may be a string, in which case it is to be interpreted as an interface name.
+Interface Format definitions support an optional third element to the array, which is to be used as the IPv6 Link-Local zone identifier from {{Section 4 of RFC3542}} and {{Section 6 of RFC4007}};
+for symmetry this is also provided for IPv4 as in {{RFC4001}} and {{RFC6991}}.
+The zone identifier may be an integer, in which case it is to be interpreted as the interface index.
+It may be a text string, in which case it is to be interpreted as an interface name.
 
 As explained in {{RFC4007}} the zone identifiers are strictly local to the node.
 They are useful for communications within a node about connected addresses (for instance, where a link-local peer is discovered by one daemon, and another daemon needs to be informed).
@@ -308,12 +311,13 @@ ipv4-address-or-prefix = #6.52(ipv4-address /
 ipv6-address = bytes .size 16
 ipv4-address = bytes .size 4
 
-ipv6-address-with-prefix = [ipv6-address, ipv6-prefix-value,
-                            ?ipv6-interface-identifier]
-ipv4-address-with-prefix = [ipv4-address, ipv4-prefix-length]
+ipv6-address-with-prefix = [ipv6-address,
+                            ipv6-prefix-length / false,
+                            ?ip-zone-identifier]
+ipv4-address-with-prefix = [ipv4-address,
+                            ipv4-prefix-length / false,
+                            ?ip-zone-identifier]
 
-ipv6-prefix-value  = ipv6-prefix-length
-                   / false
 ipv6-prefix-length = 0..128
 ipv4-prefix-length = 0..32
 
@@ -323,7 +327,7 @@ ipv4-prefix = [ipv4-prefix-length, ipv4-prefix-bytes]
 ipv6-prefix-bytes = bytes .size (uint .le 16)
 ipv4-prefix-bytes = bytes .size (uint .le 4)
 
-ipv6-interface-identifier = uint / tstr
+ip-zone-identifier = uint / text
 
 ~~~~
 {: #cddl-types title=""}
