@@ -38,6 +38,8 @@ informative:
   IANA.cbor-tags: tags
   RFC3542:
   RFC4007:
+  RFC4001:
+  RFC6991:
 
 --- abstract
 
@@ -104,15 +106,17 @@ The length of the byte string is always 16 bytes (for IPv6) and 4 bytes (for IPv
 
 This form is called the Interface Format.
 
-Interface Format definitions support an optional third element to the array, which is to be used as the IPv6 Link-Local zone identifier from {{Section 4 of RFC3542}} and {{Section 6 of RFC4007}}.
-This may be an integer, in which case it is to be interpreted as the interface index.
-This may be a string, in which case it is to be interpreted as an interface name.
+Interface Format definitions support an optional third element to the array, which is to be used as the IPv6 Link-Local zone identifier from {{Section 4 of RFC3542}} and {{Section 6 of RFC4007}};
+for symmetry this is also provided for IPv4 as in {{RFC4001}} and {{RFC6991}}.
+The zone identifier may be an integer, in which case it is to be interpreted as the interface index.
+It may be a text string, in which case it is to be interpreted as an interface name.
 
 As explained in {{RFC4007}} the zone identifiers are strictly local to the node.
 They are useful for communications within a node about connected addresses (for instance, where a link-local peer is discovered by one daemon, and another daemon needs to be informed).
 They may also have utility in some management protocols.
 
-In the cases where the Interface Format is being used to represent only an address with an interface identifier, and no interface prefix information, then the prefix length may be replaced with the CBOR "false" (0xF4).
+In the cases where the Interface Format is being used to represent
+only an address with a zone identifier, and no interface prefix information, then the prefix length may be replaced with the CBOR "null" (0xF6).
 
 
 ## IPv6
@@ -141,7 +145,8 @@ For example:
 An IPv6 address combined with a prefix length, such as being used for
 configuring an interface, is to be encoded as a two element array,
 with the (full-length) IPv6 address first and the length of the
-associated network the prefix next.
+associated network the prefix next; a third element can be added for
+the zone identifier.
 
 
 For example:
@@ -159,7 +164,7 @@ Some example of a link-local IPv6 address with a 64-bit prefix:
 54([h'fe8000000000020202fffffffe030303', 64, 'eth0'])
 ~~~~
 
-with a numeric interface identifier:
+with a numeric zone identifier:
 
 ~~~~
 54([h'fe8000000000020202fffffffe030303', 64, 42])
@@ -168,10 +173,10 @@ with a numeric interface identifier:
 An IPv6 link-local address without a prefix length:
 
 ~~~~
-54([h'fe8000000000020202fffffffe030303', false, 42])
+54([h'fe8000000000020202fffffffe030303', null, 42])
 ~~~~
 
-Interface identifiers may be used with any kind of IPv6 address, not just Link-Local addresses.
+Zone identifiers may be used with any kind of IP address, not just Link-Local addresses.
 In particular, they are valid for multicast addresses, and there may still be some significance
 for Globally Unique Addresses (GUA).
 
@@ -204,7 +209,8 @@ For example:
 An IPv4 address combined with a prefix length, such as being used for
 configuring an interface, is to be encoded as a two element array,
 with the (full-length) IPv4 address first and the length of the
-associated network the prefix next.
+associated network the prefix next; a third element can be added for
+the zone identifier.
 
 For example,  192.0.2.1/24 is to be encoded as a two element array,
 with the length of the prefix (implied 192.0.2.0/24) last.
@@ -234,14 +240,14 @@ to zero, if any.  While decoders are expected to ignore them, such garbage entit
 MUST be encoded as:
 
 ~~~~
-52([44, h'20010db81230'])
+54([44, h'20010db81230'])
 ~~~~
 
 even though variations like:
 
 ~~~~
 54([44, h'20010db81233'])
-54([45, h'20010db8123f'])
+54([44, h'20010db8123f'])
 ~~~~
 
 would be parsed in the exact same way; they MUST be considered invalid.
@@ -308,12 +314,13 @@ ipv4-address-or-prefix = #6.52(ipv4-address /
 ipv6-address = bytes .size 16
 ipv4-address = bytes .size 4
 
-ipv6-address-with-prefix = [ipv6-address, ipv6-prefix-value,
-                            ?ipv6-interface-identifier]
-ipv4-address-with-prefix = [ipv4-address, ipv4-prefix-length]
+ipv6-address-with-prefix = [ipv6-address,
+                            ipv6-prefix-length / null,
+                            ?ip-zone-identifier]
+ipv4-address-with-prefix = [ipv4-address,
+                            ipv4-prefix-length / null,
+                            ?ip-zone-identifier]
 
-ipv6-prefix-value  = ipv6-prefix-length
-                   / false
 ipv6-prefix-length = 0..128
 ipv4-prefix-length = 0..32
 
@@ -323,7 +330,7 @@ ipv4-prefix = [ipv4-prefix-length, ipv4-prefix-bytes]
 ipv6-prefix-bytes = bytes .size (uint .le 16)
 ipv4-prefix-bytes = bytes .size (uint .le 4)
 
-ipv6-interface-identifier = uint / tstr
+ip-zone-identifier = uint / text
 
 ~~~~
 {: #cddl-types title=""}
@@ -379,5 +386,5 @@ IANA is requested to add the note "DEPRECATED in favor of 52 and 54 for IP addre
 # Acknowledgements
 {: numbered="false"}
 
-Roman Danyliw, Donald Eastlake, Ben Kaduk, Barry Leiba, and Éric Vyncke reviewed the document and provided suggested text.
-
+{{{Roman Danyliw}}}, {{{Donald Eastlake}}}, {{{Ben Kaduk}}}, {{{Barry Leiba}}}, and {{{Éric Vyncke}}} reviewed the document and provided suggested text.
+{{{Jürgen Schönwälder}}} helped finding the history of IPv4 zone identifiers.
