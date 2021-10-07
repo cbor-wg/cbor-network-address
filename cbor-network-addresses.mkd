@@ -115,7 +115,8 @@ As explained in {{RFC4007}} the zone identifiers are strictly local to the node.
 They are useful for communications within a node about connected addresses (for instance, where a link-local peer is discovered by one daemon, and another daemon needs to be informed).
 They may also have utility in some management protocols.
 
-In the cases where the Interface Format is being used to represent only an address with an interface identifier, and no interface prefix information, then the prefix length may be replaced with the CBOR "false" (0xF4).
+In the cases where the Interface Format is being used to represent
+only an address with a zone identifier, and no interface prefix information, then the prefix length may be replaced with the CBOR "null" (0xF6).
 
 
 ## IPv6
@@ -163,7 +164,7 @@ Some example of a link-local IPv6 address with a 64-bit prefix:
 54([h'fe8000000000020202fffffffe030303', 64, 'eth0'])
 ~~~~
 
-with a numeric interface identifier:
+with a numeric zone identifier:
 
 ~~~~
 54([h'fe8000000000020202fffffffe030303', 64, 42])
@@ -172,10 +173,10 @@ with a numeric interface identifier:
 An IPv6 link-local address without a prefix length:
 
 ~~~~
-54([h'fe8000000000020202fffffffe030303', false, 42])
+54([h'fe8000000000020202fffffffe030303', null, 42])
 ~~~~
 
-Interface identifiers may be used with any kind of IPv6 address, not just Link-Local addresses.
+Zone identifiers may be used with any kind of IP address, not just Link-Local addresses.
 In particular, they are valid for multicast addresses, and there may still be some significance
 for Globally Unique Addresses (GUA).
 
@@ -314,10 +315,10 @@ ipv6-address = bytes .size 16
 ipv4-address = bytes .size 4
 
 ipv6-address-with-prefix = [ipv6-address,
-                            ipv6-prefix-length / false,
+                            ipv6-prefix-length / null,
                             ?ip-zone-identifier]
 ipv4-address-with-prefix = [ipv4-address,
-                            ipv4-prefix-length / false,
+                            ipv4-prefix-length / null,
                             ?ip-zone-identifier]
 
 ipv6-prefix-length = 0..128
