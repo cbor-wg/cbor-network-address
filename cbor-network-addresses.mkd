@@ -383,5 +383,5 @@ IANA is requested to add the note "DEPRECATED in favor of 52 and 54 for IP addre
 # Acknowledgements
 {: numbered="false"}
 
-Roman Danyliw, Donald Eastlake, Ben Kaduk, Barry Leiba, and Éric Vyncke reviewed the document and provided suggested text.
-
+{{{Roman Danyliw}}}, {{{Donald Eastlake}}}, {{{Ben Kaduk}}}, {{{Barry Leiba}}}, and {{{Éric Vyncke}}} reviewed the document and provided suggested text.
+{{{Jürgen Schönwälder}}} helped finding the history of IPv4 zone identifiers.
