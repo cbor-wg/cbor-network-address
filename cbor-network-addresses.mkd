@@ -31,7 +31,7 @@ author:
   country: Germany
 
 normative:
-  RFC8949:
+  RFC8949: cbor
   RFC8610: cddl
 
 informative:
@@ -134,7 +134,7 @@ For example:
 ~~~~
 
 An IPv6 prefix, such as 2001:db8:1234::/48 is to be encoded as a two element array, with the length of the prefix first.
-Trailing zero bytes MUST be omitted.
+See {{validity}} for the detailed construction of the second element.
 
 For example:
 
@@ -197,7 +197,7 @@ For example:
 ~~~~
 
 An IPv4 prefix, such as 192.0.2.0/24 is to be encoded as a two element array, with the length of the prefix first.
-Trailing zero bytes MUST be omitted.
+See {{validity}} for the detailed construction of the second element.
 
 For example:
 
@@ -222,22 +222,37 @@ with the length of the prefix (implied 192.0.2.0/24) last.
 The address-with-prefix form can be reliably distinguished
 from the prefix form only in the sequence of the array elements.
 
+# Tag validity {#validity}
 
-# Encoder Considerations for Prefixes
+This section discusses when a tag 54 or tag 52 is valid ({{Section
+5.3.2 of -cbor}}).
+As with all CBOR tags, validity checking can be handled in a generic
+CBOR library or in the application.
+A generic CBOR library needs to document whether and how it handles
+validity checking.
 
-For the byte strings used in representing prefixes,
-an encoder MUST omit any right-aligned (trailing) sequence of bytes that are all zero.
+The rule `ip-address-or-prefix` in {{cddl-types}} shows how to check the
+overall structure of these tags and their content, the ranges of
+integer values, and the lengths of byte strings.
+An instance of tag 52 or 54 is valid if it matches that rule and, for
+ipv6-prefix and ipv4-prefix, the considerations of Sections
+{{<valid-encoder}} and {{<valid-decoder}}.
 
-There is no relationship between the number of bytes omitted and the prefix length.
-For instance, the prefix 2001:db8::/64 is encoded as:
+## Deterministic Encoding
 
-~~~~
-54([64, h'20010db8'])
-~~~~
+The tag validity rules, combined with the rules in {{Section 4.2.1 of
+-cbor}}, lead to deterministic encoding for tags 54 and 52 and require
+no further Additional Deterministic Encoding Considerations as per
+{{Section 4.2.2 of -cbor}}.
 
-An encoder MUST take care to set all trailing bits in the final byte to zero, if any.
-While decoders are expected to ignore them, such garbage entities could be used as a covert channel, or may reveal the state of what would otherwise be private memory contents.
+## Encoder Considerations for Prefixes {#valid-encoder}
 
+For the byte strings used as the second element in the array
+representing a prefix:
+
+(1) An encoder MUST set any unused bytes, and any unused bits in the
+final byte, if any, to zero.
+Unused bytes/bits are bytes/bits that are not covered by the prefix length given.
 So for example, `2001:db8:1230::/44` MUST be encoded as:
 
 ~~~~
@@ -249,48 +264,63 @@ even though variations like:
 ~~~~
 54([44, h'20010db81233'])
 54([44, h'20010db8123f'])
+54([44, h'20010db8123012'])
 ~~~~
 
-would be parsed in the exact same way, they MUST be considered invalid by decoders.
+start with the same 44 bits, but are not valid.
 
-The same considerations apply to IPv4 prefixes.
+(Analogous examples can be constructed for IPv4 prefixes.)
 
-# Decoder Considerations for Prefixes
+(2) An encoder MUST then omit any right-aligned (trailing) sequence of
+bytes that are all zero.
 
-A decoder MUST consider all bits to the right of the prefix length to be zero.
+There is no relationship between the number of bytes omitted and the prefix length.
+For instance, the prefix 2001:db8::/64 is encoded as:
 
-A decoder MUST handle the case where a prefix length specifies that more bits are relevant than are actually present in the byte-string.  As a pathological case, ::/128 can be
-encoded as
+~~~~
+54([64, h'20010db8'])
+~~~~
+
+
+## Decoder Considerations for Prefixes {#valid-decoder}
+
+A decoder MUST check that all unused bits encoded in the byte string
+ipv6-prefix-bytes/ipv4-prefix-bytes, i.e., the bits to the right of
+the prefix length, are zero.
+
+A decoder MUST also check that the byte string does not end in a zero
+byte.
+
+Since encoders are required to remove zero-valued trailing bytes, a
+decoder MUST handle the case where a prefix length specifies that more
+bits are relevant than are actually present in the byte-string.
+
+As an example, ::/128 is encoded as
 
 ~~~~
 54([128, h''])
 ~~~~
 
-A recommendation for implementations is to first create an array of 16 (or 4) zero bytes.
+### Example implementation
+
+A recommendation for prefix decoder implementations is to first create
+an array of 16 (or 4) zero bytes.
 
 Then taking whichever is smaller between (a) the length of the
 included byte-string, and (b) the number of bytes covered by the
 prefix-length rounded up to the next multiple of 8: fail if that
 number is greater than 16 (or 4), and then copy that many bytes from
-the byte-string into the array.
+the byte-string into the byte array.
 
-Finally, looking at the last three bits of the prefix-length in bits
-(that is, the prefix-length modulo 8), use a static array of 8 values
-to force the lower, non-relevant bits to zero, or simply:
-
-~~~ c
-unused_bits = (8 - (prefix_length_in_bits & 7)) % 8;
-if (length_in_bytes > 0)
-  address_bytes[length_in_bytes - 1] &= (0xFF << unused_bits);
-~~~
-
-Decoders MUST examine the lower non-relevant bits to determine if they are non-zero, and reject the prefix if they are not.
-This would detect non-compliant encoders, or a possible covert channel.
+Finally, looking at the number of unused bits in the last byte (if
+any) of the range covered by the prefix length, check that any unused
+bits in the byte string are zero:
 
 ~~~ c
+unused_bits = (8 - (prefix_length_in_bits % 8)) % 8;
 if (length_in_bytes > 0 &&
     (address_bytes[length_in_bytes - 1] & ~(0xFF << unused_bits))
-    != 0)
+       != 0)
   fail();
 ~~~
 
@@ -334,23 +364,29 @@ ipv4-prefix-bytes = bytes .size (uint .le 4)
 ip-zone-identifier = uint / text
 
 ~~~~
-{: #cddl-types title=""}
+{: #cddl-types title="CDDL types for tags 54 and 52"}
 
 # Security Considerations
 
 This document provides an CBOR encoding for IPv4 and IPv6 address information.
 Any applications using these encodings will need to consider the security
-implications of this data in their specific context.  For example, identifying
+implications of these data in their specific context.  For example, identifying
 which byte sequences in a protocol are addresses may allow an attacker or
 eavesdropper to better understand what parts of a packet to attack.
 
-The right-hand bits of the prefix, after the prefix-length, are ignored by this protocol.
-A malicious party could use them to transmit covert data in a way that would not affect the primary use of this encoding.
-Such abuse would be detected by examination of the raw protocol bytes.
-Users of this encoding should be aware of this possibility.
+Applications need to check the validity ({{validity}}) of a tag before
+acting on any of its contents.
+If the validity checking is not done in the generic CBOR decoder, it
+needs to be done in the application; in any case it needs to be done
+before the tag is transformed into a platform-specific representation
+that could conceal validity errors.
 
-There are many ways in which the encodings may be invalid: wrong byte lengths (too long, too short), or invalid prefix lengths (greater than 32 for IPv4, greater than 128 for IPv6, negative values, etc.)
-These are all invalid and this error needs to be signaled to the application, and the entire content thrown away.
+The right-hand bits of the prefix, after the prefix-length, are set to
+zero by this protocol.
+(Otherwise, a malicious party could use them to transmit covert data
+in a way that would not affect the primary use of this encoding.
+Such abuse is detected by tag validity checking, and can also be
+detected by examination of the raw protocol bytes.)
 
 # IANA Considerations
 
