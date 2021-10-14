@@ -40,6 +40,7 @@ informative:
   RFC4007:
   RFC4001:
   RFC6991:
+  RFC7042:
 
 --- abstract
 
@@ -56,7 +57,7 @@ This specification defines two CBOR Tags for use with IPv6 and IPv4 addresses an
 {{RFC8949}} defines a number of CBOR Tags for common items.
 Tags 260 and 261 were later defined in drafts listed with IANA {{-tags}}.
 These tags were intended to cover addresses (260) and prefixes (261).
-Tag 260 distinguishes between IPv6, IPv4, and MAC {{?RFC7042}} addresses only through the length of the  byte string making it impossible, for example, to drop trailing zeros in the encoding of IP addresses.  Tag 261 was not documented well enough for use.
+Tag 260 distinguishes between IPv6, IPv4, and MAC {{RFC7042}} addresses only through the length of the  byte string, making it impossible, for example, to drop trailing zeros in the encoding of IP addresses.  Tag 261 was not documented well enough for use.
 
 This specification defines tags 54 and 52 achieving
 an explicit indication of IPv6 or IPv4 by the tag number.
@@ -68,11 +69,12 @@ The prefix format omits trailing zeroes in the address part.
 (Due to the complexity of testing, the value of omitting trailing
 zeros for the pure address format was considered non-essential and
 support for that is not provided in this specification.)
-This specification does not deal with 6- or 8-byte Ethernet addresses.
+This specification does not deal with MAC addresses ({{Section 2 of
+RFC7042}}) such as they are used for Ethernet.
 
 # Terminology
 
-{::boilerplate bcp14}
+{::boilerplate bcp14-tagged}
 
 # Protocol
 
