@@ -72,7 +72,7 @@ This specification does not deal with 6- or 8-byte Ethernet addresses.
 
 # Terminology
 
-{::boilerplate bcp14}
+{::boilerplate bcp14-tagged}
 
 # Protocol
 
