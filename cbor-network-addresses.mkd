@@ -36,7 +36,6 @@ normative:
 
 informative:
   IANA.cbor-tags: tags
-  RFC3542:
   RFC4007:
   RFC4001:
   RFC6991:
@@ -108,7 +107,7 @@ The length of the byte string is always 16 bytes (for IPv6) and 4 bytes (for IPv
 
 This form is called the Interface Format.
 
-Interface Format definitions support an optional third element to the array, which is to be used as the IPv6 Link-Local zone identifier from {{Section 4 of RFC3542}} and {{Section 6 of RFC4007}};
+Interface Format definitions support an optional third element to the array, which is to be used as the IPv6 Link-Local zone identifier from {{Section 6 of RFC4007}};
 for symmetry this is also provided for IPv4 as in {{RFC4001}} and {{RFC6991}}.
 The zone identifier may be an integer, in which case it is to be interpreted as the interface index.
 It may be a text string, in which case it is to be interpreted as an interface name.
